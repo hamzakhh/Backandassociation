@@ -3,7 +3,7 @@ services:
   - type: web
     name: association-backend
     runtime: node
-    rootDir: backend-separe
+    rootDir: .  # Root directory is now the backend repo itself
     buildCommand: npm install
     startCommand: npm start
     envVars:
