@@ -159,6 +159,16 @@ app.use('/api/v1/volunteers', volunteerRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/patients', patientRoutes);
 
+// Health check endpoint for Render
+app.get('/api/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development'
+  });
+});
+
 // Gestion des erreurs
 app.use(notFound);
 app.use(errorHandler);
@@ -183,12 +193,17 @@ const server = app.listen(PORT, () => {
 // Gestion des erreurs non gérées
 process.on('unhandledRejection', (err) => {
   logger.error(`Erreur non gérée: ${err.message}`);
+  logger.error(`Stack: ${err.stack}`);
   server.close(() => process.exit(1));
 });
 
 process.on('uncaughtException', (err) => {
   logger.error(`Exception non capturée: ${err.message}`);
+  logger.error(`Stack: ${err.stack}`);
   process.exit(1);
 });
+
+// Log de démarrage réussi
+logger.info('Configuration du serveur terminée, démarrage en cours...');
 
 module.exports = app;
