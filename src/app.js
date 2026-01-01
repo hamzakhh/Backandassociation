@@ -192,7 +192,7 @@ const startServer = async () => {
     const PORT = process.env.PORT || 5000;
     console.log(`🌐 Démarrage du serveur sur le port ${PORT}`);
     
-    const server = app.listen(PORT, () => {
+    const server = app.listen(PORT, '0.0.0.0', () => {
       console.log(`🚀 Serveur démarré avec succès sur le port ${PORT}`);
       console.log('🔄 Serveur en écoute et prêt à recevoir des requêtes...');
       logger.info(`
@@ -208,10 +208,22 @@ const startServer = async () => {
       `);
     });
     
+    // Set timeout for requests
+    server.timeout = 30000; // 30 seconds
+    
     // Log périodique pour confirmer que le serveur est en vie
     setInterval(() => {
       console.log('💚 Serveur actif - Uptime: ' + Math.floor(process.uptime()) + 's');
     }, 30000); // Toutes les 30 secondes
+    
+    // Handle server errors gracefully
+    server.on('error', (error) => {
+      if (error.code === 'EADDRINUSE') {
+        console.error(`❌ Port ${PORT} déjà utilisé`);
+      } else {
+        console.error('❌ Erreur du serveur:', error);
+      }
+    });
     
     return server;
   } catch (error) {
@@ -228,13 +240,21 @@ startServer();
 process.on('unhandledRejection', (err) => {
   logger.error(`Erreur non gérée: ${err.message}`);
   logger.error(`Stack: ${err.stack}`);
-  process.exit(1);
+  console.error('❌ Erreur non gérée:', err.message);
+  // Don't exit in production, just log the error
+  if (process.env.NODE_ENV !== 'production') {
+    process.exit(1);
+  }
 });
 
 process.on('uncaughtException', (err) => {
   logger.error(`Exception non capturée: ${err.message}`);
   logger.error(`Stack: ${err.stack}`);
-  process.exit(1);
+  console.error('❌ Exception non capturée:', err.message);
+  // Don't exit in production, just log the error
+  if (process.env.NODE_ENV !== 'production') {
+    process.exit(1);
+  }
 });
 
 // Log de démarrage réussi
