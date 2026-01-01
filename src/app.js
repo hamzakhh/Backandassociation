@@ -190,6 +190,7 @@ const startServer = async () => {
     
     const server = app.listen(PORT, () => {
       console.log(`🚀 Serveur démarré avec succès sur le port ${PORT}`);
+      console.log('🔄 Serveur en écoute et prêt à recevoir des requêtes...');
       logger.info(`
       ╔═══════════════════════════════════════════════════╗
       ║                                                   ║
@@ -203,6 +204,11 @@ const startServer = async () => {
       `);
     });
     
+    // Log périodique pour confirmer que le serveur est en vie
+    setInterval(() => {
+      console.log('💚 Serveur actif - Uptime: ' + Math.floor(process.uptime()) + 's');
+    }, 30000); // Toutes les 30 secondes
+    
     return server;
   } catch (error) {
     console.error('❌ Erreur fatale au démarrage:', error.message);
@@ -212,19 +218,24 @@ const startServer = async () => {
 };
 
 // Lancer le serveur
-startServer();
+let server;
+startServer().then(s => {
+  server = s;
+});
 
 // Gestion des erreurs non gérées
 process.on('unhandledRejection', (err) => {
   logger.error(`Erreur non gérée: ${err.message}`);
   logger.error(`Stack: ${err.stack}`);
-  server.close(() => process.exit(1));
+  if (server) server.close(() => process.exit(1));
+  else process.exit(1);
 });
 
 process.on('uncaughtException', (err) => {
   logger.error(`Exception non capturée: ${err.message}`);
   logger.error(`Stack: ${err.stack}`);
-  process.exit(1);
+  if (server) server.close(() => process.exit(1));
+  else process.exit(1);
 });
 
 // Log de démarrage réussi
