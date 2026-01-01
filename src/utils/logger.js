@@ -1,7 +1,8 @@
 const winston = require('winston');
 const path = require('path');
 
-const logDir = 'logs';
+// Use /tmp for production environments like Render
+const logDir = process.env.NODE_ENV === 'production' ? '/tmp/logs' : 'logs';
 
 // Configuration du logger
 const logger = winston.createLogger({
