@@ -125,6 +125,45 @@ Authorization: Bearer <token>
 }
 ```
 
+## 🚀 Déploiement sur Render
+
+### 1. Configuration du Service
+
+1. **Connectez votre repository GitHub** à Render
+2. **Créez un Web Service** avec ces paramètres:
+   - **Name**: `association-backend`
+   - **Environment**: `Node`
+   - **Root Directory**: `./`
+   - **Build Command**: `npm install`
+   - **Start Command**: `npm start`
+   - **Instance Type**: `Free` ou `Starter`
+
+### 2. Variables d'Environnement Render
+
+Ajoutez ces variables dans votre service Render:
+
+```bash
+NODE_ENV=production
+PORT=3001
+MONGODB_URI=votre_uri_mongodb_atlas
+JWT_SECRET=votre_jwt_secret_tres_securise
+JWT_EXPIRE=7d
+FRONTEND_URL=votre_url_frontend_render
+```
+
+### 3. Configuration MongoDB Atlas
+
+1. Créez un compte sur [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Créez un cluster gratuit
+3. Configurez l'accès réseau (autorisez Render: 0.0.0.0/0)
+4. Créez un utilisateur de base de données
+5. Copiez l'URI de connexion dans les variables Render
+
+### 4. URL de Déploiement
+
+Une fois déployé, votre API sera accessible:
+`https://votre-service-name.onrender.com`
+
 ## 🧪 Tests
 
 ```bash
