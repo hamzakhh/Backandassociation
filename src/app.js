@@ -221,7 +221,11 @@ const startServer = async () => {
 let server;
 startServer().then(s => {
   server = s;
+  console.log('🎯 Serveur maintenu en vie - Processus bloqué');
 });
+
+// Empêcher le processus de se terminer
+process.stdin.resume();
 
 // Gestion des erreurs non gérées
 process.on('unhandledRejection', (err) => {
