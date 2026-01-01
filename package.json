@@ -2,7 +2,7 @@
   "name": "creative-association-backend",
   "version": "1.0.0",
   "description": "Backend API pour l'Association Creative",
-  "main": "src/app.js",
+  "main": "server.js",
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
