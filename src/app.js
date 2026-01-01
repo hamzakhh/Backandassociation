@@ -1,3 +1,8 @@
+// Logging immédiat pour diagnostiquer le démarrage
+console.log('🚀 Démarrage du backend...');
+console.log('NODE_ENV:', process.env.NODE_ENV);
+console.log('MONGODB_URI définie:', !!process.env.MONGODB_URI);
+
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -173,22 +178,41 @@ app.get('/api/health', (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-// Démarrer le serveur
-const PORT = process.env.PORT || 5000;
+// Démarrer le serveur avec gestion d'erreurs
+const startServer = async () => {
+  try {
+    console.log('🔗 Connexion à la base de données...');
+    await connectDB();
+    console.log('✅ Base de données connectée');
+    
+    const PORT = process.env.PORT || 5000;
+    console.log(`🌐 Démarrage du serveur sur le port ${PORT}`);
+    
+    const server = app.listen(PORT, () => {
+      console.log(`🚀 Serveur démarré avec succès sur le port ${PORT}`);
+      logger.info(`
+      ╔═══════════════════════════════════════════════════╗
+      ║                                                   ║
+      ║   🚀 API Association Creative                     ║
+      ║                                                   ║
+      ║   📡 Serveur démarré sur le port ${PORT}             ║
+      ║   🌍 Environnement: ${process.env.NODE_ENV || 'development'}          ║
+      ║   📝 Logs: logs/combined.log                      ║
+      ║                                                   ║
+      ╚═══════════════════════════════════════════════════╝
+      `);
+    });
+    
+    return server;
+  } catch (error) {
+    console.error('❌ Erreur fatale au démarrage:', error.message);
+    console.error('Stack:', error.stack);
+    process.exit(1);
+  }
+};
 
-const server = app.listen(PORT, () => {
-  logger.info(`
-  ╔═══════════════════════════════════════════════════╗
-  ║                                                   ║
-  ║   🚀 API Association Creative                     ║
-  ║                                                   ║
-  ║   📡 Serveur démarré sur le port ${PORT}             ║
-  ║   🌍 Environnement: ${process.env.NODE_ENV || 'development'}          ║
-  ║   📝 Logs: logs/combined.log                      ║
-  ║                                                   ║
-  ╚═══════════════════════════════════════════════════╝
-  `);
-});
+// Lancer le serveur
+startServer();
 
 // Gestion des erreurs non gérées
 process.on('unhandledRejection', (err) => {
