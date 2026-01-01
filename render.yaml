@@ -10,7 +10,7 @@ services:
       - key: NODE_ENV
         value: production
       - key: MONGODB_URI
-        value: mongodb+srv://hamza:CORRECT_PASSWORD@cluster0.xofqdwg.mongodb.net/DATABASE_NAME?appName=Cluster0
+        value: mongodb+srv://hamza:hamza@cluster0.xofqdwg.mongodb.net/DATABASE_NAME?appName=Cluster0
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRE
