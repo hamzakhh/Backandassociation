@@ -9,6 +9,8 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
+      - key: MONGODB_URI
+        value: mongodb+srv://hamza:your_password_here@cluster0.xofqdwg.mongodb.net/?appName=Cluster0
       - key: JWT_SECRET
         generateValue: true
       - key: JWT_EXPIRE
@@ -21,18 +23,12 @@ services:
         value: /tmp/uploads
       - key: API_VERSION
         value: v1
+      - key: FRONTEND_URL
+        value: https://your-frontend-url.onrender.com
       - key: RATE_LIMIT_WINDOW_MS
         value: 900000
       - key: RATE_LIMIT_MAX_REQUESTS
         value: 100
-    # Variables à configurer manuellement dans Render
-    envVarGroups:
-      - name: Database Config
-        envVars:
-          - key: MONGODB_URI
-            sync: false
-          - key: FRONTEND_URL
-            sync: false
 
 # Auto-Deploy configuration
 autoDeploy: true
