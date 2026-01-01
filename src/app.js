@@ -186,8 +186,11 @@ app.use(errorHandler);
 const startServer = async () => {
   try {
     console.log('🔗 Connexion à la base de données...');
-    await connectDB();
-    console.log('✅ Base de données connectée');
+    
+    // Try to connect to database but don't fail if it doesn't work
+    connectDB().catch(err => {
+      console.log('⚠️ Database connection failed, but server will continue starting');
+    });
     
     const PORT = process.env.PORT || 5000;
     console.log(`🌐 Démarrage du serveur sur le port ${PORT}`);

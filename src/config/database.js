@@ -2,13 +2,37 @@ const mongoose = require('mongoose');
 const logger = require('../utils/logger');
 
 const connectDB = async () => {
-  try {
-    const conn = await mongoose.connect(process.env.MONGODB_URI);
+  const maxRetries = 5;
+  const retryDelay = 5000; // 5 seconds
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      console.log(`🔗 Tentative de connexion à MongoDB (${attempt}/${maxRetries})...`);
+      const conn = await mongoose.connect(process.env.MONGODB_URI, {
+        serverSelectionTimeoutMS: 10000, // 10 seconds timeout
+        connectTimeoutMS: 10000,
+      });
 
-    logger.info(`MongoDB connecté: ${conn.connection.host}`);
-  } catch (error) {
-    logger.error(`Erreur de connexion MongoDB: ${error.message}`);
-    process.exit(1);
+      logger.info(`MongoDB connecté: ${conn.connection.host}`);
+      console.log('✅ Base de données connectée avec succès');
+      return conn;
+    } catch (error) {
+      logger.error(`Erreur de connexion MongoDB (tentative ${attempt}): ${error.message}`);
+      console.error(`❌ Erreur de connexion MongoDB (tentative ${attempt}):`, error.message);
+      
+      if (attempt === maxRetries) {
+        console.error('❌ Échec de connexion après toutes les tentatives');
+        // Don't exit in production, just log the error
+        if (process.env.NODE_ENV !== 'production') {
+          process.exit(1);
+        }
+        return;
+      }
+      
+      // Wait before retrying
+      console.log(`🔄 Nouvelle tentative dans ${retryDelay/1000} secondes...`);
+      await new Promise(resolve => setTimeout(resolve, retryDelay));
+    }
   }
 };
 
