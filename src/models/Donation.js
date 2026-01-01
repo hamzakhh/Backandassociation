@@ -70,7 +70,7 @@ const donationSchema = new mongoose.Schema({
 // Index pour la recherche et les rapports
 donationSchema.index({ donor: 1, paymentDate: -1 });
 donationSchema.index({ category: 1, paymentDate: -1 });
-donationSchema.index({ receiptNumber: 1 });
+// receiptNumber index is already created by unique: true
 
 // Hook post-save pour mettre à jour les stats du donateur
 donationSchema.post('save', async function() {
