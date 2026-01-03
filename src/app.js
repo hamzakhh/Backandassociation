@@ -43,6 +43,8 @@ const corsOptions = {
     // Liste des origines autorisées
     const allowedOrigins = [
       process.env.FRONTEND_URL || 'http://localhost:3000',
+      'https://frantendassociation.onrender.com',
+      'https://frantendassociation.onrender.com/',
       'http://localhost:3000',
       'http://localhost:3001',
       'http://localhost:5000',
