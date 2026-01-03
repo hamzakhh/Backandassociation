@@ -168,6 +168,30 @@ app.use('/api/v1/volunteers', volunteerRoutes);
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/patients', patientRoutes);
 
+// Legacy CGI compatibility routes
+app.get('/cgi/get.cgi', (req, res) => {
+  const cmd = req.query.cmd;
+  
+  // Map legacy commands to modern API responses
+  switch(cmd) {
+    case 'home_login':
+      // Redirect to modern login endpoint or return appropriate response
+      res.json({
+        success: false,
+        message: 'Please use /api/auth/login endpoint',
+        redirect: '/api/auth/login'
+      });
+      break;
+    
+    default:
+      res.status(404).json({
+        success: false,
+        message: 'Command not found',
+        available_commands: ['home_login']
+      });
+  }
+});
+
 // Health check endpoint for Render
 app.get('/api/health', (req, res) => {
   res.status(200).json({
