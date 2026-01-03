@@ -1,7 +1,7 @@
 services:
   # Backend API Service
   - type: web
-    name: association-backend
+    name: backandassociation
     runtime: node
     rootDir: .  # Root directory is now the backend repo itself
     buildCommand: npm install
@@ -24,7 +24,7 @@ services:
       - key: API_VERSION
         value: v1
       - key: FRONTEND_URL
-        value: https://your-frontend-url.onrender.com
+        value: https://frantendassociation.onrender.com
       - key: RATE_LIMIT_WINDOW_MS
         value: 900000
       - key: RATE_LIMIT_MAX_REQUESTS
